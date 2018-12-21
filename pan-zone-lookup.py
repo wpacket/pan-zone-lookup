@@ -37,7 +37,7 @@ def get_zone(firewall_ip,destination_ip,api_key):
 
   try:
     url = "https://{ip}/api".format(ip=firewall_ip)
-    api_call = {'type': 'op', 'Key': api_key, 'cmd': '<test><routing><fib-lookup><ip>'+destination_ip+'</ip><virtual-router>core0</virtual-router></fib-lookup></routing></test>'}
+    api_call = {'type': 'op', 'Key': api_key, 'cmd': '<test><routing><fib-lookup><ip>'+destination_ip+'</ip><virtual-router>default</virtual-router></fib-lookup></routing></test>'}
     api_response = api_request(url,api_call)
     parse_response_code(api_response)
     
@@ -54,7 +54,7 @@ def get_zone(firewall_ip,destination_ip,api_key):
     for leaf in root.iter():		 		 	
 		if leaf.tag == "zone":		 	
 			zone = leaf.text
-			print zone
+			return zone
 	
   except:
     print("\n\033[1;31;40m[Error] : Cannot run the API call on firewall "+firewall_ip+"\033[0m\n")
@@ -62,7 +62,7 @@ def get_zone(firewall_ip,destination_ip,api_key):
 
 if __name__ == '__main__':	
 
-  usage = 'pan-route-lookup-simple -fi <firewall ip or DNS> -ip <ip_for_zone_lookup>' 
+  usage = 'pan-route-lookup -fi <firewall ip or DNS> -ip <ip_for_zone_lookup>' 
  
   parser = argparse.ArgumentParser(usage=usage)
   parser.add_argument('-fi', action='store',required=True, help='Firewall FQDN/IP')
@@ -70,9 +70,9 @@ if __name__ == '__main__':
   results = parser.parse_args()
   
   firewall_ip	=  results.fi
-  api_key = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"	
+  api_key = "XXXXXXXXXXXXXXXXXXXXX"	
   destination_ip= results.ip
   url = "https://{ip}/api".format(ip=firewall_ip)
   
-  get_zone(firewall_ip,destination_ip,api_key)
+  print "The IP "+str(destination_ip)+" is connected to the Zone "+str(get_zone(firewall_ip,destination_ip,api_key))
   
